@@ -26,11 +26,12 @@ init(State) ->
 do(State) ->
     rebar_api:info("Running abnfc...", []),
     Opts = abnfc_opts(State),
+    Dir = rebar_state:dir(State),
     rebar_base_compiler:run(State, [],
-                            option(doc_root, Opts),
+                            filename:join(Dir, option(doc_root, Opts)),
                             option(source_ext, Opts),
-                            option(out_dir, Opts),
-                            option(module_ext, Opts) ++ ".erl",
+                            filename:join(Dir, option(out_dir, Opts)),
+                            option(module_ext, Opts),
                             fun compile_abnfc/3),
     {ok, State}.
 
@@ -56,7 +57,7 @@ default(module_ext) -> "".
 abnfc_is_present() ->
     code:which(abnfc) =/= non_existing.
 
-compile_abnfc(Source, _Target, Config) ->
+compile_abnfc(Source, Target, Config) ->
     case abnfc_is_present() of
         false ->
             rebar_api:error(
@@ -68,13 +69,10 @@ compile_abnfc(Source, _Target, Config) ->
                    "===============================================~n~n", []),
             rebar_utils:abort();
         true ->
-            AbnfcOpts = abnfc_opts(Config),
-            SourceExt = option(source_ext, AbnfcOpts),
             Opts = [noobj,
-                    {o, option(out_dir, AbnfcOpts)},
-                    {mod, filename:basename(Source, SourceExt) ++
-                         option(module_ext, AbnfcOpts)}],
-            rebar_api:info("abnfc:file(~p, ~p)", [Source, Opts]),
+                    {o, filename:dirname(Target)},
+                    {mod, filename:basename(Target)}],
+            rebar_api:debug("abnfc:file(~p, ~p)", [Source, Opts]),
             case abnfc:file(Source, Opts) of
                 ok -> ok;
                 Error ->
