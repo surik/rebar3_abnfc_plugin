@@ -24,13 +24,14 @@ init(State) ->
 
 -spec do(rebar_state:t()) -> {ok, rebar_state:t()} | {error, string()}.
 do(State) ->
-    DtlOpts = abnfc_opts(State),
+    Opts = abnfc_opts(State),
     rebar_base_compiler:run(State, [],
-                            option(doc_root, DtlOpts),
-                            option(source_ext, DtlOpts),
-                            option(out_dir, DtlOpts),
-                            option(module_ext, DtlOpts) ++ ".erl",
-                            fun compile_abnfc/3).
+                            option(doc_root, Opts),
+                            option(source_ext, Opts),
+                            option(out_dir, Opts),
+                            option(module_ext, Opts) ++ ".erl",
+                            fun compile_abnfc/3),
+    {ok, State}.
 
 -spec format_error(any()) -> iolist().
 format_error(Reason) ->
@@ -43,8 +44,8 @@ format_error(Reason) ->
 abnfc_opts(Config) ->
     rebar_state:get(Config, abnfc_opts, []).
 
-option(Opt, DtlOpts) ->
-    proplists:get_value(Opt, DtlOpts, default(Opt)).
+option(Opt, Opts) ->
+    proplists:get_value(Opt, Opts, default(Opt)).
 
 default(doc_root) -> "src";
 default(out_dir)  -> "src";
