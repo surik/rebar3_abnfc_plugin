@@ -24,6 +24,7 @@ init(State) ->
 
 -spec do(rebar_state:t()) -> {ok, rebar_state:t()} | {error, string()}.
 do(State) ->
+    rebar_api:info("Running abnfc...", []),
     Opts = abnfc_opts(State),
     rebar_base_compiler:run(State, [],
                             option(doc_root, Opts),
@@ -73,6 +74,7 @@ compile_abnfc(Source, _Target, Config) ->
                     {o, option(out_dir, AbnfcOpts)},
                     {mod, filename:basename(Source, SourceExt) ++
                          option(module_ext, AbnfcOpts)}],
+            rebar_api:info("abnfc:file(~p, ~p)", [Source, Opts]),
             case abnfc:file(Source, Opts) of
                 ok -> ok;
                 Error ->
