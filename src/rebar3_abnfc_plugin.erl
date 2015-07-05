@@ -40,7 +40,7 @@ format_error(Reason) ->
     io_lib:format("~p", [Reason]).
 
 %% ===================================================================
-%% Internal functions 
+%% Internal functions
 %% ===================================================================
 
 abnfc_opts(Config) ->
@@ -57,7 +57,7 @@ default(module_ext) -> "".
 abnfc_is_present() ->
     code:which(abnfc) =/= non_existing.
 
-compile_abnfc(Source, Target, Config) ->
+compile_abnfc(Source, Target, _Config) ->
     case abnfc_is_present() of
         false ->
             rebar_api:error(
