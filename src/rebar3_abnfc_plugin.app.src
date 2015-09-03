@@ -1,9 +1,12 @@
 {application, rebar3_abnfc_plugin,
- [{description, "A rebar plugin"},
+ [{description, "A rebar plugin for abnfc"},
   {vsn, "0.1.0"},
   {registered, []},
   {applications,
    [kernel, stdlib, abnfc]},
   {env,[]},
-  {modules, [rebar3_abnfc_plugin]}
+  {modules, [rebar3_abnfc_plugin]},
+
+  {contributors, ["Yury Gargay"]},
+  {links, [{"Github", "https://github.com/surik/rebar3_abnfc_plugin"}]}
  ]}.
